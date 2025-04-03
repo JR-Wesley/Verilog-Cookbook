@@ -1,11 +1,14 @@
-# Refactoring version of 《FPGA应用开发和仿真》
+# Verilog Cookbook
 
 ## Overview
 
 **Purpose**:
 This repository is dedicated to refactoring the codebase to improve its structure and modularity.
-The original code is written primarily for publication without a good coding style.
-After learning the book and using the code for development, I decide to organize the code for better maintainability and re-usability.
+
+Content:
+- Basics about SystemVerilog grammar.
+- Fundamental modules in SystemVerilog.
+- A simulation guide using `iverilog, vivado`.
 
 **Key Feature:**
 - Avoid using behavior description. Only implement DFF with enable and clear in `always` block. RTL codes describe what circuit looks like.
@@ -18,6 +21,63 @@ After learning the book and using the code for development, I decide to organize
 **Status**:
 This branch is under active development. You are welcomed to follow and contribute.
 More details or the principle of digital design can be referred to this book.
+
+## Knowledge Hierarchy
+
+```shell
+.
+├── basics
+│   ├── datatype
+│   ├── misc
+│   ├── operator
+│   └── procedure
+├── modules
+│   ├── accumulator
+│   ├── cc_event_handshake
+│   ├── counter
+│   ├── cross_cd_cnt_state
+│   ├── cross_cd_trigger
+│   ├── dcfifo
+│   ├── decoder
+│   ├── delay_chain
+│   ├── delay_chain_mem
+│   ├── digital_osc_trigger
+│   ├── edge2en
+│   ├── encoder
+│   ├── gray
+│   ├── key_process
+│   ├── memory
+│   ├── mux
+│   ├── pulse_widen
+│   ├── pwm
+│   ├── quadrature_inc_enc
+│   ├── scfifo
+│   ├── shiftreg
+│   └── stop_watch_fsm
+└── sim_guide
+    ├── iverilog
+    └── vivado_script
+31 directories
+```
+
+## Simulation Guide
+
+This repository adds a definitive (try my best) guide for simulation.
+I believe the basic tools and infrastructure for design and simulation is vital because it can make the process of development and debugging faster.
+
+In some directories, the waveform after simulation using Iverilog is provided for a better understanding of the circuit.
+The generated format of the wave file is `fst` for smaller storage.
+This file format can be opened using `Gtkwave`.
+
+## Illustration
+
+The major content in this repository are the source code and errata for the book *FPGA Application Development and Simulation* (CHS, ISBN:9787111582786). After the publication of the book, some bug fixes, code optimizations and other related content have been added one after another.
+
+All modules are synthesizable, EXCEPT:
+
+1. Modules for testbenches;
+2. Most FPGA development tools do not support the `let` construct, which can be converted to `task`;
+3. Some FPGA development tools (e.g., old versions of Quartus) do not support the evaluation of real parameter expressions, you may calculate and replace them by yourself.
 
 ## Coding Notes
 
@@ -93,23 +153,4 @@ logic [3 : 0][7 : 0] data; // packed array
 ### Special
 
 ### Tools
-
-## Simulation Guide
-
-This repository adds a definitive (try my best) guide for simulation.
-I believe the basic tools and infrastructure for design and simulation is vital because it can make the process of development and debugging faster.
-
-In some directories, the waveform after simulation using Iverilog is provided for a better understanding of the circuit.
-The generated format of the wave file is `fst` for smaller storage.
-This file format can be opened using `Gtkwave`.
-
-## Illustration
-
-The major content in this repository are the source code and errata for the book *FPGA Application Development and Simulation* (CHS, ISBN:9787111582786). After the publication of the book, some bug fixes, code optimizations and other related content have been added one after another.
-
-All modules are synthesizable, EXCEPT:
-
-1. Modules for testbenches;
-2. Most FPGA development tools do not support the `let` construct, which can be converted to `task`;
-3. Some FPGA development tools (e.g., old versions of Quartus) do not support the evaluation of real parameter expressions, you may calculate and replace them by yourself.
 
