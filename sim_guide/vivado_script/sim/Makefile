@@ -1,17 +1,28 @@
-tb = testbench
+tb ?= TestDcFifo
 
+TB_SRC := ../$(tb).sv
+SIM_TCL := ./cfg_xsim.tcl
+WAVE_FILE := ./dump.vcd
+
+.PHONY: all wave clean
 all : compile elab sim
 
-compile :
-	xvlog --sv ../$(tb).sv
+compile : $(TB_SRC)
+	@echo "Vivado compiling..."
+	xvlog --sv $(TB_SRC)
 
-elab :
+elab : compile
+	@echo "Vivado elaborating..."
 	xelab --debug typical -top $(tb) -s $(tb)_snap
 
-sim :
-	xsim $(tb)_snap -t cfg_xsim.tcl # -gui
+sim : elab
+	@echo "Vivado simulating..."
+	xsim $(tb)_snap -t $(SIM_TCL) # -gui
+
+wave : $(WAVE_FILE)
+	gtkwave $(WAVE_FILE)
 
 clean :
-	# note: `-r` is for `mv`
-	rm -r .Xil/ xsim.dir/ xelab* xsim* xvlog* $(tb)_snap*
+	@echo "Cleaning up generated files..."
+	rm -rf dump.vcd .Xil/ xsim.dir/ xelab* xsim* xvlog* $(tb)_snap*
 

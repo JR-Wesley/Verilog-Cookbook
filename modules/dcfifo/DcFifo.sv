@@ -12,7 +12,7 @@ module DcFifo #(
 ) (
   // ---- write domain ----
   input  logic w_clk,
-  input  logic w_rst,
+  input  logic w_rst_n,
   input  dw_t  din,
   input  logic write,
   output aw_t  w_wr_cnt,
@@ -22,7 +22,7 @@ module DcFifo #(
   output logic w_empty,
   // ---- read domain ----
   input  logic r_clk,
-  input  logic r_rst,
+  input  logic r_rst_n,
   output dw_t  dout,
   input  logic read,
   output aw_t  r_wr_cnt,
@@ -36,24 +36,24 @@ module DcFifo #(
   dw_t qout_b, qout_b_reg = '0;
 
   // ---- write counter and read counter ----
-  CrossClkCnt #(.W(AW))
+  CrossClkCnt #(.DW(AW))
       theCcdCntWr (  // write counter on write domain
-        .clk_a(w_clk),
-        .rst_a(w_rst),
-        .clk_b(r_clk),
-        .rst_b(r_rst),
-        .inc  (write),
-        .cnt_a(w_wr_cnt),  // the write counter
-        .cnt_b(r_wr_cnt)   // write counter synced to read domain
+        .clk_a  (w_clk),
+        .rst_n_a(w_rst_n),
+        .clk_b  (r_clk),
+        .rst_n_b(r_rst_n),
+        .inc    (write),
+        .cnt_a  (w_wr_cnt),  // the write counter
+        .cnt_b  (r_wr_cnt)   // write counter synced to read domain
       ),
       theCcdCntRd (  // read counter on read domain
-        .clk_a(r_clk),
-        .rst_a(r_rst),
-        .clk_b(w_clk),
-        .rst_b(w_rst),
-        .inc  (read),
-        .cnt_a(r_rd_cnt),  // the read counter
-        .cnt_b(w_rd_cnt)   // read counter synced to write domain
+        .clk_a  (r_clk),
+        .rst_n_a(r_rst_n),
+        .clk_b  (w_clk),
+        .rst_n_b(w_rst_n),
+        .inc    (read),
+        .cnt_a  (r_rd_cnt),  // the read counter
+        .cnt_b  (w_rd_cnt)   // read counter synced to write domain
       );
 
   // ---- the simple dual clock ram ----
@@ -72,12 +72,12 @@ module DcFifo #(
 
   // ---- refine output behavior ----
   logic rd_dly;
-  always_ff @(posedge r_clk) begin
-    if (r_rst) rd_dly <= 1'b0;
+  always_ff @(posedge r_clk, negedge r_rst_n) begin
+    if (!r_rst_n) rd_dly <= 1'b0;
     else rd_dly <= read;
   end
-  always_ff @(posedge r_clk) begin
-    if (r_rst) qout_b_reg <= '0;
+  always_ff @(posedge r_clk, negedge r_rst_n) begin
+    if (!r_rst_n) qout_b_reg <= '0;
     else if (rd_dly) qout_b_reg <= qout_b;
   end
   assign dout = (rd_dly) ? qout_b : qout_b_reg;

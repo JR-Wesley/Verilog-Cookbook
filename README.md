@@ -56,13 +56,15 @@ More details or the principle of digital design can be referred to this book.
 │   └── stop_watch_fsm
 └── sim_guide
     ├── iverilog
+    ├── verilator
     └── vivado_script
-31 directories
+
+32 directories
 ```
 
 ## Simulation Guide
 
-This repository adds a definitive (try my best) guide for simulation.
+This repository adds a guide for simulation.
 I believe the basic tools and infrastructure for design and simulation is vital because it can make the process of development and debugging faster.
 
 In some directories, the waveform after simulation using Iverilog is provided for a better understanding of the circuit.
@@ -113,44 +115,4 @@ This is the answer given by AI, maybe serving as a reference:
 4. **线程和对象的随机数生成**：在 SystemVerilog 中，每个进程（包括线程、对象、函数或任务调用）都有一个独立的随机数生成器（RNG）。了解这一点对于开发测试平台时控制随机数生成非常重要。
 
 综上所述，为了确保仿真的可重现性和随机数生成的稳定性，Verible 建议使用 `$urandom` 或 `randomize()` 替代 `$random` 和 `$dist_*` 函数。这些替代方案提供了更好的随机数生成器，并且更符合 SystemVerilog 的随机稳定性模型。
-
-
-## Coding style
-
-The below lists several coding style I adhere to.
-
-### Basic
-
-#### 1. Name
-
-#### 2. Format
-
-#### 3. Design
-
-##### Signal Definition
-
-
-a. All the signal are defined as `logic` type.
-
-
-##### Data Width and Constant values
-
-a. MSB : LSB
-b. LSB starts with 0, except address alignment
-
-
-- Packed Array
-
-Using packed array instead.
-
-```verilog
-logic [3 : 0][7 : 0] data; // packed array
-```
-#### 4. Simulation
-
-### Advanced
-
-### Special
-
-### Tools
 

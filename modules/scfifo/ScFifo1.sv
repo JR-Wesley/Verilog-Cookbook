@@ -3,7 +3,7 @@
 
 `include "../memory/SdpRamRf.sv"
 
-module ScFifo1 #(  // add rst in 20220315
+module ScFifo1 #(
     parameter int  DW   = 8,
     parameter int  AW   = 10,
     parameter type dw_t = logic [DW - 1 : 0],

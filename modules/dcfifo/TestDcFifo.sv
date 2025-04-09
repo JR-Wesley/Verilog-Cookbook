@@ -5,12 +5,12 @@
 
 module TestDcFifo;
   import SimSrcGen::*;
-  logic w_clk, w_rst;
-  logic r_clk, r_rst;
+  logic w_clk, w_rst_n;
+  logic r_clk, r_rst_n;
   initial GenClk(w_clk, 8, 10);
   initial GenClk(r_clk, 7, 9);
-  initial GenRst(w_clk, w_rst, 1, 2);
-  initial GenRst(r_clk, r_rst, 1, 2);
+  initial GenRstn(w_clk, w_rst_n, 1, 2);
+  initial GenRstn(r_clk, r_rst_n, 1, 2);
 
   logic [7:0] din = '0, dout;
   logic wr = '0, rd = '0;
@@ -21,41 +21,32 @@ module TestDcFifo;
 
   initial begin
     #100;
+
     // ---- try write 10 data ----
-    for (int i = 0; i < 10; i++) begin
-      @(posedge w_clk) {wr, din} = {1'b1, 8'($urandom())};
-    end
+    repeat (10) @(posedge w_clk) {wr, din} = {1'b1, 8'($urandom())};
     @(posedge w_clk) wr = 1'b0;
     // ---- try read 10 data ----
     repeat (2) @(posedge r_clk);
-    for (int i = 0; i < 10; i++) begin
-      @(posedge r_clk) rd = 1'b1;
-    end
+    repeat (10) @(posedge r_clk) rd = 1'b1;
     @(posedge r_clk) rd = 1'b0;
+
     // ---- try write 5 data ----
-    for (int i = 0; i < 5; i++) begin
-      @(posedge w_clk) {wr, din} = {1'b1, 8'($urandom())};
-    end
+    repeat (5) @(posedge w_clk) {wr, din} = {1'b1, 8'($urandom())};
     @(posedge w_clk) wr = 1'b0;
     // ---- try read 5 data ----
     repeat (2) @(posedge r_clk);
-    for (int i = 0; i < 5; i++) begin
-      @(posedge r_clk) rd = 1'b1;
-    end
+    repeat (5) @(posedge r_clk) rd = 1'b1;
     @(posedge r_clk) rd = 1'b0;
+
     // ---- try write 5 data ----
-    for (int i = 0; i < 5; i++) begin
-      @(posedge w_clk) {wr, din} = {1'b1, 8'($urandom())};
-    end
+    repeat (5) @(posedge w_clk) {wr, din} = {1'b1, 8'($urandom())};
     @(posedge w_clk) wr = 1'b0;
     // ---- try read 5 data ----
     repeat (2) @(posedge r_clk);
-    for (int i = 0; i < 5; i++) begin
-      @(posedge r_clk) rd = 1'b1;
-    end
+    repeat (5) @(posedge r_clk) rd = 1'b1;
     @(posedge r_clk) rd = 1'b0;
-    // ---- stop ----
-    #100 $stop();
+
+    #100 $finish();
   end
 
   DcFifo #(
